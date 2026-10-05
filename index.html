@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FITNESS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f2f4f9; --card:#ffffff; --ink:#111729; --muted:#5d667c; --line:#dde2ee;
+  --accent:#e2400d; --accent-ink:#ffffff; --err:#b3261e; --ok-bg:#ffece4;
+  --glow1:rgba(226,64,13,.16); --glow2:rgba(70,90,200,.14);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c101b; --card:#151b2b; --ink:#eef1f8; --muted:#9aa4bd; --line:#262e45;
+    --accent:#ff6a3d; --accent-ink:#1a0a04; --err:#ff8a80; --ok-bg:#2a1a16;
+    --glow1:rgba(255,106,61,.20); --glow2:rgba(80,100,255,.18);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c101b; --card:#151b2b; --ink:#eef1f8; --muted:#9aa4bd; --line:#262e45;
+  --accent:#ff6a3d; --accent-ink:#1a0a04; --err:#ff8a80; --ok-bg:#2a1a16;
+  --glow1:rgba(255,106,61,.20); --glow2:rgba(80,100,255,.18);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; background:var(--bg); color:var(--ink);
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  display:flex; align-items:center; justify-content:center; padding:24px 16px;
+}
+.card{
+  width:100%; max-width:440px; background:var(--card);
+  border:1px solid var(--line); border-radius:16px; padding:32px 28px;
+}
+h1{font-size:1.6rem; margin:0 0 6px; letter-spacing:-.01em}
+.sub{margin:0 0 24px; color:var(--muted); line-height:1.5}
+.field{margin-bottom:18px}
+label{display:block; font-weight:600; font-size:.95rem; margin-bottom:6px}
+input,select{
+  width:100%; font:inherit; color:var(--ink); background:var(--bg);
+  border:1.5px solid var(--line); border-radius:10px; padding:12px 14px;
+}
+input:focus,select:focus,button:focus-visible{outline:3px solid var(--accent); outline-offset:1px; border-color:var(--accent)}
+.row{display:flex; gap:10px}
+.row input{flex:1; min-width:0}
+.row select{width:92px; flex:none}
+.invalid{border-color:var(--err)}
+.err{color:var(--err); font-size:.85rem; margin:6px 0 0; min-height:1.1em}
+button{
+  width:100%; font:inherit; font-weight:600; cursor:pointer; border:0;
+  background:var(--accent); color:var(--accent-ink); border-radius:10px; padding:14px;
+  transition:transform .08s ease, opacity .2s;
+}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.6; cursor:wait}
+button.ghost{background:transparent; color:var(--accent); border:1.5px solid var(--accent); margin-top:18px}
+.success{text-align:center}
+.tick{
+  width:64px; height:64px; margin:0 auto 16px; border-radius:50%;
+  background:var(--ok-bg); display:grid; place-items:center;
+}
+.tick svg{width:32px; height:32px; stroke:var(--accent); fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+.summary{
+  text-align:left; margin:20px 0 0; padding:16px; background:var(--bg);
+  border-radius:10px; display:grid; grid-template-columns:auto 1fr; gap:8px 16px;
+}
+.summary dt{color:var(--muted)} .summary dd{margin:0; font-weight:600; text-align:right}
+.plan{text-align:left; margin-top:24px}
+.plan h2{font-size:1.15rem; margin:0 0 4px}
+.plan h3{font-size:1rem; margin:20px 0 8px; color:var(--accent)}
+.plan ul{list-style:none; margin:0; padding:0; border:1px solid var(--line); border-radius:10px; overflow:hidden}
+.plan li{display:flex; justify-content:space-between; gap:14px; padding:11px 14px; border-top:1px solid var(--line); line-height:1.35}
+.plan li:first-child{border-top:0}
+.plan li span:last-child{font-weight:600; white-space:nowrap; text-align:right}
+.exhead{display:flex; justify-content:space-between; align-items:center; margin:0 0 8px}
+.exhead strong{color:var(--accent)}
+.link{width:auto; background:none; color:var(--accent); padding:4px 6px; font-size:.85rem; border:0}
+.opt{display:flex; align-items:flex-start; gap:12px; padding:10px 12px; border:1.5px solid var(--line); border-radius:10px; margin-bottom:8px; cursor:pointer; line-height:1.35; font-weight:400}
+.opt input{width:20px; height:20px; margin:1px 0 0; padding:0; flex:none; accent-color:var(--accent)}
+.opt .d{display:block; color:var(--muted); font-size:.85rem}
+.opt:has(input:checked){border-color:var(--accent); background:var(--ok-bg)}
+.exsec{margin-bottom:18px}
+.home{text-align:center}
+.big{padding:18px; font-size:1.1rem; margin-top:12px}
+.big.alt{background:transparent; color:var(--accent); border:1.5px solid var(--accent)}
+.home h1{font-size:2rem; letter-spacing:.16em; margin:0}
+.titlerow{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:10px}
+.cam{width:44px; height:44px; padding:0; border-radius:50%; background:transparent; color:var(--accent); border:1.5px solid var(--accent); display:grid; place-items:center; flex:none}
+.cam svg{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.shot{margin:4px 0 6px; text-align:center}
+.shotbtns{display:flex; gap:10px; justify-content:center; align-items:center}
+.shotbtns button{width:auto; padding:9px 18px; font-size:.9rem}
+.shot .msg{margin:6px 0 0; color:var(--muted); font-size:.85rem; min-height:1.1em}
+.shot img{display:block; max-width:100%; max-height:240px; margin:0 auto 6px; border-radius:12px; border:1px solid var(--line)}
+.logo{display:block; width:100%; max-width:220px; height:auto; margin:0 auto 12px}
+:root[data-theme="dark"] .logo{filter:invert(1)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo{filter:invert(1)}}
+textarea{width:100%; font:inherit; color:var(--ink); background:var(--bg); border:1.5px solid var(--line); border-radius:10px; padding:12px 14px; min-height:140px; resize:vertical}
+textarea:focus{outline:3px solid var(--accent); outline-offset:1px; border-color:var(--accent)}
+.back{margin:-10px 0 10px -8px}
+.theme{position:fixed; top:calc(12px + env(safe-area-inset-top,0px)); right:12px; z-index:5; width:44px; height:44px; padding:0; border-radius:50%; background:var(--card); color:var(--ink); border:1.5px solid var(--line); display:grid; place-items:center}
+.theme svg{width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+#bResult{margin-top:22px; scroll-margin-top:64px}
+#bResult .note{margin:12px 0 0; color:var(--muted); font-size:.85rem; line-height:1.45}
+.modal{position:fixed; inset:0; z-index:10; background:rgba(0,0,0,.5); display:flex; align-items:center; justify-content:center; padding:16px}
+.modalbox{position:relative; width:100%; max-width:440px; max-height:calc(100vh - 32px); max-height:calc(100dvh - 32px); overflow-y:auto; overscroll-behavior:contain; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px 24px 24px}
+.modalbox h1{padding-right:40px}
+.close{position:sticky; top:0; z-index:2; display:block; margin:-10px -6px -28px auto; width:38px; height:38px; padding:0; border-radius:50%; background:var(--card); color:var(--ink); border:1.5px solid var(--line); font-size:1.5rem; line-height:1}
+.item{border:1.5px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:10px}
+.item .top{display:flex; justify-content:space-between; align-items:center; gap:10px; font-weight:600; line-height:1.3}
+.item .nums{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:8px}
+.item .nums label{display:block; font-weight:400; font-size:.8rem; color:var(--muted); margin:0}
+.item .nums input{padding:8px 10px; margin-top:3px}
+#schedList .big{margin-top:10px}
+#schedPick,#cPlanSel{width:auto; flex:1; min-width:0}
+#cPlanMsg{margin:6px 0 0; color:var(--muted); font-size:.85rem; min-height:1.1em}
+.addbtn{width:auto; flex:none; padding:0 22px}
+#cNewList{margin-top:14px}
+.opt .nm{flex:1}
+.opt .rm,.item .rm{width:auto; flex:none; padding:0 8px; font-size:1.3rem; line-height:1; color:var(--muted); background:none; border:0}
+.sheet{position:fixed; inset:0; z-index:10; background:rgba(0,0,0,.45); display:flex; align-items:flex-end; justify-content:center; padding:16px; padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.sheetbox{width:100%; max-width:440px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; display:grid; gap:10px}
+.sheetbox .ghost{margin-top:0}
+.sheetbox .link{width:100%; padding:10px; font-size:1rem}
+.sheetcard{margin-bottom:18px}
+.sheethead{display:flex; justify-content:space-between; align-items:center; margin:0 0 6px}
+.sheethead strong{color:var(--accent); font-size:1.05rem}
+.stamp{color:var(--muted); font-size:.8rem; margin-top:2px}
+.sheetwrap{overflow-x:auto; border:1px solid var(--line); border-radius:10px}
+.sheet-tbl{width:100%; border-collapse:collapse; font-size:.9rem}
+.sheet-tbl th,.sheet-tbl td{padding:9px 10px; border:1px solid var(--line); text-align:left; vertical-align:top}
+.sheet-tbl th{background:var(--ok-bg); color:var(--accent); font-weight:600; white-space:nowrap}
+.sheet-tbl td:nth-child(n+2),.sheet-tbl th:nth-child(n+2){text-align:center; white-space:nowrap}
+.sheet-tbl tbody tr:nth-child(even){background:var(--bg)}
+.menu{position:fixed; top:calc(12px + env(safe-area-inset-top,0px)); left:12px; z-index:5; width:44px; height:44px; padding:0; border-radius:50%; background:var(--card); color:var(--ink); border:1.5px solid var(--line); display:grid; place-items:center}
+.menu svg{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round}
+.drawer{position:fixed; inset:0; z-index:10; background:rgba(0,0,0,.45); display:flex; justify-content:flex-start}
+.drawerbox{width:min(320px,85vw); height:100%; overflow-y:auto; background:var(--card); border-right:1px solid var(--line); padding:calc(20px + env(safe-area-inset-top,0px)) 20px 20px}
+.drawerbox h2{margin:0 0 14px; font-size:1.25rem}
+.drawerbox .summary{margin:0 0 18px}
+.drawerbox .summary dd{overflow-wrap:anywhere}
+.drawerx{display:block; margin:-6px -6px 6px auto; font-size:1.6rem; line-height:1}
+
+/* ---- modern look: background + typography ---- */
+:root{--font-head:"Barlow Condensed","Arial Narrow",system-ui,sans-serif; --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+body{
+  font-family:var(--font-body); line-height:1.5; -webkit-font-smoothing:antialiased;
+  background-color:var(--bg);
+  background-image:radial-gradient(55rem 38rem at 90% -8%, var(--glow1), transparent 62%), radial-gradient(48rem 34rem at -8% 108%, var(--glow2), transparent 62%);
+  background-attachment:fixed;
+}
+h1,h2,h3{font-family:var(--font-head); font-weight:700; letter-spacing:.01em}
+h1{font-size:2.05rem; line-height:1.1}
+.home h1{font-size:2.7rem; letter-spacing:.16em}
+.plan h2{font-size:1.4rem}
+.plan h3{font-size:1.15rem}
+.sub{font-size:1rem; line-height:1.6}
+label{font-weight:600; font-size:.9rem; letter-spacing:.01em}
+.card{border-radius:28px; padding:36px 28px; box-shadow:0 28px 60px -30px rgba(10,15,40,.45)}
+.modalbox,.sheetbox{border-radius:24px}
+input,select,textarea{border-radius:14px; padding:13px 15px; border-width:1.5px}
+button{border-radius:14px; font-family:var(--font-body); font-weight:700; letter-spacing:.01em}
+button[type=submit],.big:not(.alt),.sheetbox button:first-child{box-shadow:0 12px 26px -12px var(--accent)}
+.big{font-family:var(--font-head); font-size:1.35rem; letter-spacing:.08em; padding:16px}
+.item,.opt,.plan ul,.sheetwrap,.summary{border-radius:16px}
+.logo{max-width:200px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){button{transition:none}}
+</style>
+</head>
+<body>
+<button type="button" class="theme" id="themeBtn"></button>
+<button type="button" class="menu" id="menuBtn" aria-label="Open profile menu" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+</button>
+<div class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <div class="drawerbox">
+    <button type="button" class="link drawerx" id="drawerClose" aria-label="Close">&times;</button>
+    <h2 id="drawerTitle">My profile</h2>
+    <dl class="summary" id="drawerInfo"></dl>
+    <button type="button" class="ghost" id="logoutBtn">Log out</button>
+  </div>
+</div>
+<main class="card">
+  <section id="loginView" hidden>
+    <h1>Welcome</h1>
+    <p class="sub">Enter your details to log in. You only need to do this once.</p>
+    <form id="lform" novalidate>
+      <div class="field">
+        <label for="lName">Name</label>
+        <input id="lName" type="text" autocomplete="name" placeholder="Your full name">
+      </div>
+      <div class="field">
+        <label for="lPhone">Phone number</label>
+        <input id="lPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 0771234567">
+      </div>
+      <div class="field">
+        <label for="lDob">Birthday</label>
+        <input id="lDob" type="date" min="1900-01-01" autocomplete="bday">
+      </div>
+      <p class="err" id="lErr" role="alert"></p>
+      <button type="submit">Log in</button>
+    </form>
+  </section>
+
+  <section id="homeView" class="home">
+    <img class="logo" alt="" src="data:image/png;base64,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3u924JvU7wOq0XjZfSll8+M18zvd7eF/47Ld12qRAn229/6L2/e08d6d39N+73m/8t9pX0p3+j8APgScTWS3+iFiyttInq/O8f9A4EfY5vU6sTj33I/vveaN9fS59d4P38m/+c383vR4ThfL3/m/3A/+u+rnP0v9s/o9/mIu6y//4x/4i18o//+T8/33/cUnE+fB/Hsz5I8mUe2k+mX/e5qfC82IqU3U9290qLbdS/v/5/M8a0v+f2v36D331d25L7+/yI51R54z123O1/2d5/m8v9e73X+t2fP5233e4/+pI/M/O9/fI/MzuX8G4pL0UP3Y398mUoXv5m9d4/sS6IxfyI6fXv4/71d/jXrtC+m0P6d1U8p+/X2U3s+p/94iG1o/N68x69d+T0D7+13IqO5j28e0P9sR9O/3u43aN5A/e3S+t6e02E72873U/mxb0eut6kX3T0f384x57I8jO72v27b/S5m/O+3fPqf99e3Ierw33/83m39vdv335e+I2m3sIq+d0sHbrfO4sK9m/eX83l2eE7p90+6mS4dse3+/+fG3U4BqU11pAAnY31s439vGff16yq9N3+/1mP5r5fllIeeC3p+rR98uE924p/K209f87x05fO/X1A78HwS+DZwF3I2sR79T++1d533Uf3m2iWpks2RseXf+o4F82d2t9/vL603f91A39o5v2Sg61fS4yffp+f5mepf/eD3302PzX/X3u72Xf/m1qW30z5L6a5m3p1m5/l52vJ/3+/u9bZbf071p9f+dIObK393z9W5+/v7y++2NenDqAedNefwF8Fp6fL41g3X3qMbfyX20z/b9m9p2Nvf1Wfr/u1n7fS9d/S/992I/p+2812l53m+/L9173v04x1kO3vne9N4vCynze/m8n3A5bTf9e1Aatb3mffv3q623Xsnj9bXv1+f3a2p4zud3s7b93X93902fPne9e5+f/i6yv8X++42/X899I2Xq0H8A/wA8h1iX4+M8O6S1sc8Lpud73kks1s/63K0P/Gv31u1E2k4ng97fIt8r9d6H2kI80y+mD77SAt33oPdS3/yS9X30n9m/2vL3+eP8mbfk990AnJ4H/iU/r71+58e4M8M3sD2d35W2iX74zS8A/wv4LPAv2eDY4fll2I332x/d/K6m+d42pE0L443aQnupS6A1S8x6O1+/v0j3fS/U3v9e/Z13v4/S3X5K75/ee992SvtD223X3ve/I4+fInIwf5/2s9O1f1f/edn2M1+T4fO78vt3366v9n/J93R6b/rS/i6237+/dInH8nve9/f0n/v2z/s73S33d/l946/Pz27pvdLd4/+uX8v70l774x2804/aH2lR3pOn72H354b3X0p2s3uBy2oDq/3eAn0vA9A3Xm+/X0f/2t/N5mG6f0Xf87rO17O02L6S9f3bI4+vE1nd3s3e34sW+F3aX+/kvdI25H2Uf3e9/N02q19fIe//m6l2v/8A/C6xXshL3fvh/BrdpX9fTeeD322BqRIn/W8iLek3qRZmHsoqO4G2G0/U3k/fO9/zfeP1p59X1v37833079x3/83q/0vvd+nv5m94tJ9Z1kLp99sC/s2E1x6mG2m7v0eX/0P5Wf5m7/6/7Ie9t9m93m6sX6s/e/v9jW79M3f5f3e/m/fV2421379f8bV/+p0293+/5bA3e51LbdXm7e7/H7aR3vXo/b3p8j3q33Mv/fXez/fudv++p//G3x/b22vSfvI7aA9O8vA1H+eJdCj31B/f20Tf/p8/pX34f+iE6/3vT2U39O8BzwFeR7UfAasdgPQb/8333AtYf7S4fW834WnL9v8T/I3/G+n/S+8L936Mfv99y8Yw0XmS3sO3ifUk3yX+b8X33b82m79f+9/v7uN9m37/s7fN6P+9xX13D9+599SOfv2dAn/3X9vS47f892a0139ffh+v5m//t25r2+/0vdLfe4vv1fZL6ffl/vWd+7u4n22z/Fv31jbdx3vv/55/Z/13+l/cI8s2l/T53jS/U+A23aO++f/v38ve4vu7+52k7e/T79V14/5/p/24fL33/j90AevOedwOfI2Yu/004FiIs30N2309kM+j1uXf8q/X1m4Gj8f2p1X141/0/0XWffVl0358/89f2t/T5++i9/335ed5v6bvfN5mefz2S+S5mPq2629O3ffuN++4d32a/4+2qf5/f/sfe1+/6Gv/0Xk+v7N/3x33r/4c7ed59mDffwbfm94/e76vf0s+e3p/s4/X8/e9v5v+/bvv953v2TqE6c29+c308/mfe53yXb33N39p+1kGk5X3TvvxvfX2k9fE0vnf5fA6L/P36Lp3v3057v38bJ3D/A7p236f4fM/A/q19z/fO5eS23A9T7tU+X9I36/XWfneM/n+uL93XvA/72a5mN9L66e++pC/Xm//v/sP8p2n4pX8vG94/d9X+/0/sHvf//d2//eY3r/U51vfe3Svlx19+3v7O+m2d52s9+/9/O2n4r6vvePq+7s71N+P3bY56/4m361/fL933fDq++8D8N8A/4iL07UeMrtXf2v2YyC4yM66p8I0sXbgt4DPAm8G3p6dclp43m/A5q1S18Tf56xGZ9/3X5fXf+v3b3sA3L8229/2AInP3d/P0//aB9v0AOD83oG2/p6+5z+/9/Xf+d7y8/a19X/X3fLveS4mX/m+98A1veN237Yf3/M7tA6qO9f1mve/Z/N3//3P735A+/p/bO//P/v6T/v6994G1o33/43+tXm/f5e3/e3e02l1sJmvdTrA0a5996020c6H3N44fP/e7HjB/Nrf4mP34863372f+x8f0yL6A/S5O47bNn1v95738K5m8jG2n9v49/S+m3//q53v79f6735e5/s634/eO/r5ff/v3N8+aF/306Icvfe22u/r6/6fSffyvef+9mXvv3d+30u7e/sF4m3x3Lze30qM0Aya3v+l9Xy/sP9sX4veC/13c/6uI/x/e0S7C41e97U3v250P3/X1v03tX++X/m8Xev93L13i/6/u4C/AT7b3b35f6D2B1lXvUe7D30H8X8320R2bL7fS/9x1b+/S12vudL9y4P+y2cE/ft5+p785/fev4/v+Tv2P9z2d7q3/7Rtf+/f++e9m+19f/8eS/0X/a838+/8L+Lff2q3a1+/6NbbxO4+u/f4/X36/94rL/ffz/v+/v91f8p/v29vvX3pveDud/64P6u1H/e4y45y7+dD9v+a2k9A1yIny5t6m9h353l6T//fS9q+59a//L/7872L53N239vIfr3T97aA3O3e0e7vX2v/vvx+7s1vf4v+d/S30Xb2u9O20/823e5aP84T69pX4r1d3sA+8e/e/H3XyvO/zvvqrf279933iH4a4T4b2zT4e2G7t3l8f237fS+5/z2U/eI4UvuzfO843kIs0O7/nC97+e/jX29p293/5X28yG3cft+y/12v/94E8R1idI5m10v8z/M8/Uj3304P3zvyvfvd5+rS1p5aK6C/i6N2O3Yl84E6R5sOfO+kX/X92x7v3+/331PZ9r12e/fvdT1S5s/3/50sP+399A+995f3zff92XvvN9Lp++7u021mX/6uG11fO/u8a83d36bveYvvd3+/Z9f53e3s6e2/S+3/P4PvTX3v3iX5f/M97eE69H55H9pA91qTf83/G2s38Nf/n7j/32O/vvM+f9+2X3e7eS90Xffvv8ve//p7v/4p4N/ye93A24B/Inbc/A6x2cAtOfU20Q5/U23Pvb0uI1bZ7O6/NptA201g72b389uI/Xm3P4NInOzeI7t3T7X5vP1dEmsL1q/1301sYf7c3ud57zN363GvtT53A2613/v1kLbh9z7S+Ove35Ue2kP//P1r1+S+/dtr6/xG2+9vvK8XvK+/2X14725X8f/dffrS/N4Xutvv7XfbfXbfmS9/l+n35vu/R61P3m4cR1v+H/Z9e9L3/X3X72n5+T9fS3P6L0O9d1l/f9vX+M2Ovt+T3m5X0mG30026v47/p9/fX+5//T/l310M/02Ovl9I/7f/P7jvf8E++N317+d+211P/8I9M1b/+E2I78T3t/u5f5O3//Svd+vv/2zuvtT499v++q132f01fXf/XWl77P+s33mC2Jd12/u7a+/+vP21vveU9O1s5x/5+e1eP697f2/bXpP2fSlt92N/60/S957atp9P/57+25t9H7uH1v+L3u9pL+f4d/5veX/mX3/I917/2yT3Xf28v399vve35e82fI16u+f6e/M//n6/X5d8T7vdR7d97/N2A09P591q+/3p3i3+v/2S2H5/t3fP//fK+5f+51pL2zvdE16d/0+/x9d9n+39fT5d/9/sfe92H9T39+f9mX1v7213+/z799f0X+f69f/eS/69XvC/0q4tS4u4780FvX/tF+8T5/v9e0//4i/v2f+1+/j2aXtv3f1fK9/X0/b2fWpXf/v238m/+bO3X0f+2+vXfOvv/p/Z+527l9K/r31PvI2m+9tX22jvvb3e36lvdqf+W9p3X3+j2X/x/xO4b2n/X3z/19O4b7fbfS/N7s9t342a39p/b/u/38/5Wv+N+re7j3G3m9s9bPvG1s13b++//7bX++z3vj3S23S/L5yN3v8L7353f2Pvvb202/fX0vYm/2397Xy3fG3aX/v3/93+99L/A+8f/3e6r4//0u/ffu+pX30q93u9aA2yA/d3r533Xk/221v/xR2A9A3X9u37WpD/sQ8vXvC93Yf/m4D/x31e9N3j9vD+veP7p636l9/x43tX2e/9vXfv+b/P7/v19f/s2+qEa2u9H+o6/p3/2f23t//v+0/S/l4P6XbM/3s13e7Ivf3p1941/3+s3d297sE3/vP/16e+q2nfnm1O/I0a/e7+4vS342t7p7/f4Gq5j+o1fC32p18GfnI2Mv0/O/vGvG6512O81t24X1pA6I13O3u9dffvjL3f237N9L624z8S4H2v68C4Lz/9n7NrmX8D/4iXW5sU8s92v25XbI39q14zZ2E14y8kvd70vXW3L93A24D/m95//9eKq4Gv3Wv1/s9f3P5fP8A29/8j32P9x0e8X9w//q/uXp/7I67T3q1//U7uU3f3r3qT3I7/6Nre11pS/3yS7rT/S36Hq/ve4zP2/l193+3v3e/36p4v9Lfe/9xX6n8I6z//393a52fuf/8B92+4A950v2/qN/80/tX3/7P6fV/qvt/fPqV92fSfvS+9f9l96v73e/f3yP9//3vvb/2X+i3N/23N3+/v1+/lPvZ69u8D/zP3P1L/73iQ5/619t//3v21v5tqH+b/X8x3u7G/E/iP3A1uF/vA+G//eEbf542B+3v9E8A/92bL5wP89+4+2I55x8365wUe81m4sUf//pP3xbf3pXm2jI9qD3y/8S/83mvef/7Xg+5m7a81sI++O3+3pX4T+7I4e+uXffq4D43v29vS22X/v2p6A/oO4H3/M5eA/5L//S/3E+b3e2l4L7e+b//+fW83fL2/T233I6m337vv/sB7f5/pA/1u//S2r7X3vfvUvX16O3vv3++6+2/S3+/Xf1m/39X1x7fA/TfpvtOet6X3o7vfd3ev9v8T+Nf79+/P3jP930v/s/4X+9/f9S++3v3O23a/P7s344/x/b1b3u9v71//+D3Tvt0T223v/m++3/O2k/X6xX/n28H33L93e4j6+x/u+/Pjffn+P061//6B+r/r1d3O29L//c9L7b+v/e5+3933//S1/v5O+/8H/2D/jX2iO//e69+9j48D6X1Xff33C3/P/f+a068u38H+m8y/sO9f8d1z53L//r528zL/3S/A33S9p7m0N7N//X9yP2/uP2A41aH5cW3mfdO+x2/94aXf/e5yv91v9v++sX73D96uS/+3S/3eR3u89I39e0x4P/Pfd+4p1+/3S+6S7sN3/r3bbfp/z//4vvu893e4/952D8I7+55N9/v//v+7s/v15e9P96m/R3f4z16Gf8mO23vbfd8P8TneG2b0m+e27kfa/Wv38/l9z/69N3//3vXf9e/lHrqvtGtfX2nv2N9v176e33u/9398n+vv4j70+R3S/vefSre9tP19f+Dvv+9f2n6/xX/f//m3964/O9r6E3u9v++tL+/u56V1s/9f7lD+/3+m336fLpT/f3/a+f/f7X39aO8m79/pP5f02vT33fG9u9y/m38m9s3/1T12328y36+0/x7f7xP8jdfXyP6+G3e381m1u/p+39/8S77P2m3S4O6GfO/C/+eC//eM+9oT3q+d+/z2vV2L+P6q1/O1113vG333+s3/8G20+H93p+v1//i+S917I0r/fT36c738M//793fL9b/38d3ve3fv7mbf23/830v/e5++v733y/p/X5e3fX/f3+091u+/p35//9fO/7+27Xv3/u535+/z9f1f13mX3o/pfd/32fXm9917d/f//vM/8S7I95P03+12/3p7193LpX5/+3e1/XfS9f+9s98/2b2+/5H67/jvv8uO/3L9P+B7+J2I2q7D+U9f34f6/S7d5s7//fvdq//mP1P/e7S3S68//4vvu3vv8d0v9Jd/31q3eO3v3b1+v937+y32+3m/+vO5+/m93Tuv26pP/m72f8//qS/x1jI+/sX+lK4t3O9b+3/A5fT6d7sH3fD04/n9/1/y+37a06NfUf/c/Uf85+/6b997m/r09X2L6+Ld3i7s/b+9S+/3Ivd0d3s3P2NfeT/3/8O//+yv7X3p9nbf/9f0S38//a/572x3P5M6f2//4u12//e3fU+/jbd9d9v1veH6f9yv/03/49+j/S/Tvdze+9pS//5fL/6Oa+3S/x78f/dG8s//3i2/+76/++S99rXp9u9X/3q0u1d/c3q53f+t2/fP3/D3p3+12/v3v3+/+Nf6s5p3937v6vvd/2x/3+P+e1xK245s3Xl929v1A+k+/k9s/xvd6e43f+1vM7n7++399/r/Ie2vfP29S69/p73/q3ffS79x94f71aX2S92v7p3+L9/3P3Gf7f8X/r7a5x/4I272d4753xX3X0q7p2//+u9vd33777f+z3x33m+Xvn3P/ve31e09X0z/f/a/36d+vS69v4e+6/b5+343vX2vvR32u1sL+S/tS64Afr4XmC/4e2vR2tX3x115n29334XefvI9ve9/6X7P35/f8fud67d/22vj70f2/S1vd143x4/9v26U+vKefX7/t9u/U6U3/p3d9439/s3c94t//v4//f/O49v3f/3A9aL/Hvyv+53e99J/9f/Xp6+3f53I7q3+/m1/3/v375u/X/+u/m/X5O/l6//A19f7vvj/fD+31bX1v02X2P7O53a3p2++33e21//6m5f+O322e7//vS7d9m5v6TfveX9u/HnI/fvd9/2/vL+mS/5v3f+7238+/09qS/Nl27vf33Nq2vfe/q301L/92pXmS2xLftT+O9Xvd/eL/GffS1//vf4O6n7/O3O5vT8e3e433P8S+/r+u4+/2vXfS33y//f/rfe31/p/23pfa/f19t/9f7t98q/vRvv0/bO4/+v30/d++3f8uX1P7P9y/j/p5+f/n/+X29X3n65vfR9f99+e//v/mH2ff/9z13ff+5f33L3S49S725e27/R+29/v2P/X/2+/A/2/+U30S+eS/5ve8/34b2r/eG/vd/d0veXvf/z3x/Ld/eT/fveO3vvf331/+dff7+S4237T17aI/R6f1X0a1y7S9s/L/fX261v7m/v53X583/4330L9X0v9d3Xvu/yPte/2ffj9v0z+PtfG3z/t36v/+8/k/xPvd0e3a//mfdL37Xm/+L+j7bN3m10v8S943O/fXf3mbf039++ne4/9e//vN939Xf4vdf6l+/4z/p939/d/p7Xf34/a/fvd+/vT/XvS37fS1s/e29ve7eX2P9P3b2/fHve28d2v2+1L++/ve0b+/0/Xf3eS+sL/v1/X1/633vP/2s7S7f7t7+X2y7XfA16I34f+A/fR3X3//vfS//4+9/x4n/t9d/1X5X3L9fS/+31533O1+j/a+5a7L/D+v4/f5m9531L3SfvW7m/+S3s2uS/1veL+/XfX2/mD+/z9tffuG9/1x/vf/y137X7+/a3+/p31Xvf82/812t/X0+/vM93/e/b+t3v+d9I//k3v5v99bA9L/uXv7b6/30a1G3X//vS2n/73/3T5++v3/o/6f+v9T/3//34ve+93e39023ff018s9Jt/p93/133f/aJ/6/3/+N4++eD+/f51bU/bX2O19//i/W3vfX34s0//2Xvd9L++/veW/pXv9j32X/8/vO/37/10b9fvdO//4Xve/361e2O/9e67L+/T17vX/t2v73v//a2p33190+f3d7+X0ff1/mC73/+u9f6f6+/7TfT5S5d5S/93m/+A+9a6S3S3X6y95f3bvfTee6nN6y3vO29L//d/v137L/e7fXfX/m4632tfatff8Nvd+ve19mO99f572/p3L7m9d191sP++/3d085L+/6D3/rX7/yE9rX24+e//vv12/XN17112/S3mS+/vXev//vf/ff7fT233I6m337vv/sB7f5/pA/1u//S2r/vfe//z9v+b/N//fPf3XfNvf/++s2/85/3m3/zM19/z38u3vfd2432//X8v63+z7/c/Wp3S7/e33dO/09vd0O/+9u39893/s4X5yve+X3v4fO8+/rA/m30T0e77n+/9S/sfe3+/pX1L50O7++3O3d+S4eL+X1o36/397e5Tf1+/7T+/0Xf4142fC/vO8/X73S++pXv3193ve359f/217vf+2Xv+50d/5/X0/53/Xv36m+/e+37xXf3dC/f++d3/1325r+bXv/3ev4/Xf2/T2rfvv9Tvv9vv7/R34O92/7z5e7XfS/Xf/Nrfu0fA2+1m4j++034//f/+1e/70364fU3a/n36//6+39f+3+G5sS10243/2n6S/O/s24+/t/3u/Z/97qP53/zX95q77/veftrfvvfe/+2b/969v379f697+/TvdO/f++Xvv18p/2v9e0//4r7+d/p839/tvm/vXvf3+S/fS1/s9/XUf9L7Uu+Xp9m/X/8vX33ff3pfa/2X+p72834//mXtfO/f93ve//vff9f4T//f/+/f3Pvv7f0f6L395S/s+zL7P3+e7/13e/m/u5eX7/s3ve1S9+v/nfdx6bfvff3++9S/vT2X9M0S4/jXfbf+3e35/fev29zO3z+/Ld2p/p6sHvf+/jffX1r3vfvb/q702vve21/9f2m219pve39X373N232m1d/728p93E3p50Pfv7S+1O5fXf//e3Nvf+/f8vP//9vv41L7p//52/f+xX3//1f6+a25/0X8r/v8e+7e9++sXfT/S33+/S/f36d+/46+/o1/A31f9X2S3/X95u7xfe/v8P2f6ff//y99pX4r1/s5++W1p+/S+5D5+6/X8v+/d/m/+3d16Nte8e+/1+/e63f53833t+l/7+/tXv7u+/1v/7W9tT/4XfL/93D3Xm/p+z2/pP258X13n7c//aH2xS+eD93y32+vL9y+/m+o/R7+/t4/+pX0ffv3v/P/0n77Xv3t7pfeS9/d9L/7T8vfSveO2vv143P7u/30eS6/Z36X8v7/G1a+7v8x2b1e2eA9mG/5eLsnm6898+9v1/r2f9X/TdfkY37d4D/v9/6yNfN/f03ve50f+G6412u/v5994L6Svt9//v25f4aP3zfp4v/fbf1fX83fOa7e8L/25e/v8P2v3u+I+/tffvd8vf/6+G12m+/57/u76fXv6r884G/c//k/tbfv+/y/+fS//l59/6/3X10I02m62/6A8y30u/L697p4v/A3r8vX1O58+y//ffSdfL33t460O+/Tf/j36PfP/+9l71e7a0Dud+7v39p18e77O3j3v1f3Xf093i3fe+fA+27eX2/Xvve9vfdd+/S9e273v1e5f8fvdL3vd0d6//L0/92S1s/v3d91s9/e/+x//vvX/Xvv/0x3v//p9v//f/N/+8D3vA4E/p3v//vXfS//2f8vO/3m9795j3eA1eL/9fS1/9v4L9a093A//y612f0X1PqK/9L/C5++2u+x9fX4S9u5x3A5/4e+v669/o832/vd/5+/289+P3+/p7d6e+0C919p73s+x//O19/fL9f/vv419x7S19b9d3s5/5512L+8v5++vfdd/3sffP+m1+/t+m++X/tT//r8N3+/+2D/Tvc9/vdz/3/+m27vP+/n/S9z7/07t9L/+N559P19s6/3P/e1ve8v/+9/ffve27/e77ff3+e++5//a+A9e0f3/j/p3++5+/fA2/++884H5vv9e//O27/+tffve9eXvve/f3t6+fXf1/6///e//1r75/v7+/093a3A83a3p2++33e21/d9/3X5fve4b/5/+/p7a79//m3f0O519e9/d0vef29f03/0d2//e37X0b//vv//22/3v21+bX4ff++e/9u//m33/++85++/3S+vf/++qf///9z2/f9f3n10O79s3++N8v2+5z/7a3vS99/+
+    0A=
+  ">
+    <div class="titlerow">
+      <h1>FITNESS</h1>
+      <button type="button" class="cam" id="camBtn" aria-label="Take a photo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.6"/></svg>
+      </button>
+      <input type="file" id="camInput" accept="image/*" capture="environment" hidden>
+      <input type="file" id="fileInput" accept="image/*" hidden>
+    </div>
+    <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Add a photo">
+      <div class="sheetbox">
+        <button type="button" id="optTake">Take photo</button>
+        <button type="button" class="ghost" id="optFile">Choose file</button>
+        <button type="button" class="link" id="optCancel">Cancel</button>
+      </div>
+    </div>
+    <div class="shot" id="shot" hidden>
+      <img id="shotImg" alt="Your photo">
+      <div class="shotbtns">
+        <button type="button" id="shotSave">Save photo</button>
+        <button type="button" class="link" id="shotClear">Remove photo</button>
+      </div>
+      <p class="msg" id="shotMsg" role="status"></p>
+    </div>
+    <button type="button" class="big" id="workoutBtn">Workout</button>
+    <button type="button" class="big alt" id="bmiBtn">BMI</button>
+  </section>
+
+  <section id="formView" hidden>
+    <button type="button" class="link back" id="homeBtn1">&larr; Home</button>
+    <h1>Weight check-in</h1>
+    <p class="sub">Log your body weight for the day. It takes ten seconds.</p>
+    <form id="form" novalidate>
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" autocomplete="name" placeholder="Your full name" required>
+        <p class="err" id="nameErr" role="alert"></p>
+      </div>
+      <div class="field">
+        <label for="weight">Body weight</label>
+        <div class="row">
+          <input id="weight" name="weight" type="number" inputmode="decimal" step="0.1" min="1" placeholder="e.g. 70.5" required>
+          <select id="unit" name="unit" aria-label="Weight unit">
+            <option value="kg">kg</option>
+            <option value="lb">lb</option>
+          </select>
+        </div>
+        <p class="err" id="weightErr" role="alert"></p>
+      </div>
+      <div class="field">
+        <label for="day">Day</label>
+        <select id="day" name="day" required>
+          <option value="">Select a workout day</option>
+          <option>Push Day: Chest, Shoulders, Triceps</option>
+          <option>Pull Day: Back, Biceps, Rear Delts, Forearms</option>
+          <option>Legs Day: Quads, Hamstrings, Glutes, Calves, Abs</option>
+          <option>Upper</option>
+          <option>Lower</option>
+        </select>
+        <p class="err" id="dayErr" role="alert"></p>
+      </div>
+      <div id="exercises" hidden></div>
+      <p class="err" id="formErr" role="alert"></p>
+      <button type="submit" id="submitBtn">Save check-in</button>
+    </form>
+  </section>
+
+  <section id="customView" hidden>
+    <button type="button" class="link back" id="homeBtn3">&larr; Home</button>
+    <h1>Custom workout</h1>
+    <p class="sub">Pick exercises, or add your own.</p>
+    <form id="cform" novalidate>
+      <div class="field">
+        <label for="cName">Name</label>
+        <input id="cName" type="text" autocomplete="name" placeholder="Your full name">
+      </div>
+      <div class="field">
+        <label for="cWeight">Body weight</label>
+        <div class="row">
+          <input id="cWeight" type="number" inputmode="decimal" step="0.1" min="1" placeholder="e.g. 70.5">
+          <select id="cUnit" aria-label="Weight unit"><option value="kg">kg</option><option value="lb">lb</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <div class="exhead">
+          <label style="margin:0">Pick exercises</label>
+          <button type="button" class="link" id="cClear">Clear all</button>
+        </div>
+        <div id="cList"></div>
+      </div>
+      <div class="field">
+        <label for="cNew">Add a new exercise</label>
+        <div class="row">
+          <input id="cNew" type="text" maxlength="80" placeholder="e.g. Cable Crunch">
+          <button type="button" id="cAdd" class="addbtn">Add</button>
+        </div>
+        <div id="cNewList" hidden></div>
+      </div>
+      <div class="field">
+        <label for="cPlanSel">Add ticked exercises to My plan</label>
+        <div class="row">
+          <select id="cPlanSel" aria-label="Choose a schedule"></select>
+          <button type="button" id="cPlanAdd" class="addbtn">Add</button>
+        </div>
+        <p id="cPlanMsg" role="status"></p>
+      </div>
+      <p class="err" id="cErr" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="workoutView" hidden>
+    <button type="button" class="link back" id="backHome1">&larr; Home</button>
+    <h1>Workout</h1>
+    <p class="sub">Choose what you want to do.</p>
+    <button type="button" class="big" id="customBtn">Custom workout</button>
+    <button type="button" class="big alt" id="planBtn">My plan</button>
+    <button type="button" class="big alt" id="previewBtn">Preview workout</button>
+  </section>
+
+  <section id="previewView" hidden>
+    <button type="button" class="link back" id="backWorkout2">&larr; Workout</button>
+    <h1>Preview workout</h1>
+    <p class="sub">See the schedules you saved from My plan.</p>
+    <div id="pvList" class="plan"></div>
+  </section>
+
+  <section id="planView" hidden>
+    <button type="button" class="link back" id="backWorkout3">&larr; Workout</button>
+    <h1>My plan</h1>
+    <div id="planList">
+      <p class="sub" id="schedMsg" role="status" hidden></p>
+      <p class="sub" id="planEmpty">No schedules yet. Create your first schedule.</p>
+      <div id="schedList"></div>
+      <button type="button" class="big" id="schedNew">New schedule</button>
+    </div>
+    <div id="schedEditor" hidden>
+      <div class="field">
+        <label for="schedName">Schedule name</label>
+        <input id="schedName" type="text" maxlength="40" placeholder="e.g. Schedule 1">
+      </div>
+      <div id="schedItems"></div>
+      <div class="field">
+        <label for="schedPick">Add an exercise</label>
+        <div class="row">
+          <select id="schedPick" aria-label="Choose an exercise"></select>
+          <button type="button" id="schedAddPick" class="addbtn">Add</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="schedNewEx">Or type a new exercise</label>
+        <div class="row">
+          <input id="schedNewEx" type="text" maxlength="80" placeholder="e.g. Cable Crunch">
+          <button type="button" id="schedAddNew" class="addbtn">Add</button>
+        </div>
+      </div>
+      <button type="button" id="schedDone">Done</button>
+      <button type="button" class="ghost" id="schedDelete">Delete schedule</button>
+    </div>
+  </section>
+
+  <div class="modal" id="bmiView" hidden role="dialog" aria-modal="true" aria-labelledby="bmiTitle">
+   <div class="modalbox">
+    <button type="button" class="close" id="homeBtn4" aria-label="Close">&times;</button>
+    <h1 id="bmiTitle">BMI &amp; Calories</h1>
+    <p class="sub">Enter your details to see your BMI and daily calories.</p>
+    <form id="bform" novalidate>
+      <div class="field">
+        <label for="bHeight">Height (cm)</label>
+        <input id="bHeight" type="number" inputmode="decimal" step="0.1" min="50" max="260" placeholder="e.g. 170">
+      </div>
+      <div class="field">
+        <label for="bWeight">Body weight</label>
+        <div class="row">
+          <input id="bWeight" type="number" inputmode="decimal" step="0.1" min="1" placeholder="e.g. 70.5">
+          <select id="bUnit" aria-label="Weight unit"><option value="kg">kg</option><option value="lb">lb</option></select>
+        </div>
+      </div>
+      <div class="two field">
+        <div>
+          <label for="bAge">Age</label>
+          <input id="bAge" type="number" inputmode="numeric" min="10" max="100" placeholder="e.g. 25">
+        </div>
+        <div>
+          <label for="bSex">Sex</label>
+          <select id="bSex"><option value="male">Male</option><option value="female">Female</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="bAct">Activity level</label>
+        <select id="bAct">
+          <option value="1.2">Little or no exercise</option>
+          <option value="1.375">Light (1-3 days a week)</option>
+          <option value="1.55" selected>Moderate (3-5 days a week)</option>
+          <option value="1.725">Hard (6-7 days a week)</option>
+          <option value="1.9">Very hard (twice a day / physical job)</option>
+        </select>
+      </div>
+      <p class="err" id="bErr" role="alert"></p>
+      <button type="submit">Calculate</button>
+    </form>
+    <div id="bResult" hidden aria-live="polite"></div>
+   </div>
+  </div>
+
+  <section id="successView" class="success" hidden aria-live="polite">
+    <div class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h1>Check-in saved</h1>
+    <p class="sub" style="margin-bottom:0">Thanks, <span id="sName"></span>. Here is what you sent.</p>
+    <dl class="summary">
+      <dt>Name</dt><dd id="rName"></dd>
+      <dt>Body weight</dt><dd id="rWeight"></dd>
+      <dt>Day</dt><dd id="rDay"></dd>
+    </dl>
+    <div id="plan" class="plan" hidden></div>
+    <button type="button" class="ghost" id="againBtn">Add another check-in</button>
+    <button type="button" class="link" id="homeBtn2" style="margin-top:10px">Back to Home</button>
+  </section>
+</main>
+
+<script>
+(function(){
+  // Theme switcher (light / dark), remembered in this browser
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
+  var root = document.documentElement;
+  var themeBtn = document.getElementById('themeBtn');
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var SUN = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  var MOON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+  function effectiveTheme(){
+    var t = root.getAttribute('data-theme');
+    if (t) return t;
+    return (mq && mq.matches) ? 'dark' : 'light';
+  }
+  function paintTheme(){
+    var dark = effectiveTheme() === 'dark';
+    themeBtn.innerHTML = dark ? SUN : MOON;
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    themeBtn.setAttribute('aria-label', label); themeBtn.title = label;
+  }
+  try {
+    var saved = localStorage.getItem('theme');
+    if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+  } catch(e){}
+  themeBtn.addEventListener('click', function(){
+    var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch(e){}
+    paintTheme();
+  });
+  if (mq && mq.addEventListener) mq.addEventListener('change', paintTheme);
+  paintTheme();
+
+  var form = document.getElementById('form');
+  var formView = document.getElementById('formView');
+  var successView = document.getElementById('successView');
+  var homeView = document.getElementById('homeView');
+  var customView = document.getElementById('customView');
+  var bmiView = document.getElementById('bmiView');
+  var lastFlow = 'form';
+  var btn = document.getElementById('submitBtn');
+  var fields = {
+    name: {el: document.getElementById('name'), err: document.getElementById('nameErr')},
+    weight: {el: document.getElementById('weight'), err: document.getElementById('weightErr')},
+    day: {el: document.getElementById('day'), err: document.getElementById('dayErr')}
+  };
+
+  var PUSH = 'Push Day: Chest, Shoulders, Triceps';
+  var WORKOUTS = {};
+  WORKOUTS[PUSH] = [
+    {title:'Push Day: Chest', items:[
+      ['Incline Dumbbell','4 sets × 8–10'],
+      ['Flat Barbell or Dumbbell Press','3 sets × 8–10'],
+      ['Decline Barbell Bench Press','3 sets × 8–10'],
+      ['Cable Flyes (Upper Chest)','12–15 reps'],
+      ['Cable Flyes (Inner Chest)','12–15 reps'],
+      ['Cable Flyes (Lower Chest)','12–15 reps']
+    ]},
+    {title:'Push Day: Shoulders', items:[
+      ['Cable Lateral Raises (Single-Arm)','4 sets × 8–10'],
+      ['Dumbbell Lateral Raises (Drop-Set Finisher)','3 sets'],
+      ['Barbell Overhead Press (OHP)','3 sets × 8–10'],
+      ['Dumbbell Shoulder Press','3 sets × 8–10']
+    ]},
+    {title:'Push Day: Triceps', items:[
+      ['Tricep Rope Pushdowns','4 sets × 8–10'],
+      ['Tricep Pushdowns','4 sets × 8–10'],
+      ['Skull Crushers (EZ-Bar)','3 sets × 8–10'],
+      ['Overhead Dumbbell','3 sets × 8–10'],
+      ['Overhead Cable Extension','3 sets × 8–10'],
+      ['Single-Arm High-to-Low Cable Cross-Body Extension / Kickback','3 sets × 8–10'],
+      ['Single-Arm Cable Overhead Tricep Extension (Top Pick)','3 sets × 8–10']
+    ]}
+  ];
+
+  WORKOUTS['Pull Day: Back, Biceps, Rear Delts, Forearms'] = [
+    {title:'Pull Day: Back', items:[
+      ['Deadlift','3 sets × 8–10'],
+      ['Lat Pulldowns (Wide-Grip): Lats & V-Taper Width','4 sets × 8–15'],
+      ['Seated Cable Rows, Wide Grip (Upper Back)','3 sets × 8–15'],
+      ['Incline Bench Dumbbell Row','3 sets × 8–10'],
+      ['Seated Cable Rows, Close Grip (Lats)','3 sets × 8–15'],
+      ['Pullovers','3 sets × 8–15'],
+      ['Hyperextensions / Back Extensions','']
+    ]},
+    {title:'Pull Day: Biceps', items:[
+      ['Incline Dumbbell Curls','3 sets × 8–10'],
+      ['Incline Cable Curls','3 sets × 8–10'],
+      ['Dumbbell Hammer Curls','3 sets × 8–15'],
+      ['Cable Hammer Curls','3 sets × 8–15'],
+      ['Preacher Curls','3 sets × 8–10'],
+      ['Single-Arm Preacher Curls (Dumbbell)','3 sets × 8–15'],
+      ['Barbell or EZ-Bar Curls','4 sets × 8–10']
+    ]},
+    {title:'Pull Day: Rear Delts', items:[
+      ['Cable Face Pulls','4 sets × 8–15'],
+      ['Reverse Cable Flyes','4 sets × 8–15'],
+      ['Bent-Over Dumbbell Rear Delt Flyes','4 sets × 8–15'],
+      ['Cable Flyes (Single-Arm)','4 sets × 8–15']
+    ]},
+    {title:'Pull Day: Forearms', items:[
+      ['Barbell Reverse Curls','4 sets × 10–20'],
+      ['Seated Dumbbell Wrist Extensions','4 sets × 10–15']
+    ]}
+  ];
+
+  WORKOUTS['Legs Day: Quads, Hamstrings, Glutes, Calves, Abs'] = [
+    {title:'Legs Day', items:[
+      ['Barbell Squats','3 sets × 8–10'],
+      ['Bulgarian Split','3 sets × 8–10'],
+      ['Leg Extensions','3 sets × 8–10'],
+      ['Leg Press','3 sets × 8–10'],
+      ['Single-Leg Dumbbell RDL','3 sets × 8–10'],
+      ['Romanian Deadlifts (RDLs - Barbell or Dumbbell)','3 sets × 8–10'],
+      ['Standing Calf Raises (Barbell / Smith Machine / Machine)','4 sets × 8–15'],
+      ['Seated Calf Raises','4 sets × 8–15'],
+      ['Leg Press Calf Press','4 sets × 8–15']
+    ]},
+    {title:'Legs Day: Abs', items:[
+      ['Hanging Leg','3 sets × 10–15'],
+      ['Cable Kneeling Crunches','3 sets × 10–15'],
+      ['Decline Crunches','3 sets × 10–15']
+    ]}
+  ];
+
+  WORKOUTS['Upper'] = WORKOUTS[PUSH].concat(WORKOUTS['Pull Day: Back, Biceps, Rear Delts, Forearms']);
+
+  WORKOUTS['Lower'] = WORKOUTS['Legs Day: Quads, Hamstrings, Glutes, Calves, Abs'].map(function(s){
+    return {title:s.title, items:s.items.slice()};
+  });
+  WORKOUTS['Lower'][0].items.splice(1, 0, ['Deadlift','3 sets × 8–10']);
+
+  // Custom = every exercise from Push, Pull and Legs
+  var CUSTOM_PLAN = WORKOUTS[PUSH]
+    .concat(WORKOUTS['Pull Day: Back, Biceps, Rear Delts, Forearms'])
+    .concat(WORKOUTS['Legs Day: Quads, Hamstrings, Glutes, Calves, Abs'])
+    .map(function(sec){
+      var t = sec.title.replace(/^\w+ Day:\s*/, '');
+      return {title: t === 'Legs Day' ? 'Legs' : t, items: sec.items.map(function(it){ return [it[0], '']; })};
+    });
+  // Extra exercises for Custom workout only
+  CUSTOM_PLAN.forEach(function(sec){
+    if (sec.title === 'Abs') sec.items.push(['Dragon Flag', '']);
+    if (sec.title === 'Back') { sec.items.push(['Pull-Up', '']); sec.items.push(['Weighted Pull-Up', '']); }
+  });
+
+  var exBox = document.getElementById('exercises');
+
+  function renderInto(box, plan){
+    box.innerHTML = '';
+    if (!plan) { box.hidden = true; return; }
+    plan.forEach(function(sec, si){
+      var wrap = document.createElement('div'); wrap.className = 'exsec';
+      var head = document.createElement('div'); head.className = 'exhead';
+      var t = document.createElement('strong'); t.textContent = sec.title;
+      var all = document.createElement('button'); all.type = 'button'; all.className = 'link'; all.textContent = 'Select all';
+      head.appendChild(t); head.appendChild(all); wrap.appendChild(head);
+      var boxes = [];
+      sec.items.forEach(function(it, ii){
+        var lab = document.createElement('label'); lab.className = 'opt';
+        var cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = si + ':' + ii;
+        var txt = document.createElement('span');
+        txt.appendChild(document.createTextNode(it[0]));
+        if (it[1]) { var d = document.createElement('span'); d.className = 'd'; d.textContent = it[1]; txt.appendChild(d); }
+        lab.appendChild(cb); lab.appendChild(txt); wrap.appendChild(lab);
+        boxes.push(cb);
+      });
+      all.addEventListener('click', function(){
+        var allOn = boxes.every(function(b){ return b.checked; });
+        boxes.forEach(function(b){ b.checked = !allOn; });
+        all.textContent = allOn ? 'Select all' : 'Clear';
+      });
+      box.appendChild(wrap);
+    });
+    box.hidden = false;
+  }
+  function renderChecklist(day){ renderInto(exBox, WORKOUTS[day]); }
+
+  function renderPlan(day, selected){
+    var box = document.getElementById('plan');
+    box.innerHTML = '';
+    var plan = WORKOUTS[day];
+    if (!plan || !selected.length) { box.hidden = true; return; }
+    var h = document.createElement('h2');
+    h.textContent = 'Selected exercises (' + selected.length + ')';
+    box.appendChild(h);
+    plan.forEach(function(sec, si){
+      var items = sec.items.filter(function(it, ii){ return selected.indexOf(si + ':' + ii) > -1; });
+      if (!items.length) return;
+      var h3 = document.createElement('h3'); h3.textContent = sec.title;
+      var ul = document.createElement('ul');
+      items.forEach(function(it){
+        var li = document.createElement('li');
+        var a = document.createElement('span'); a.textContent = it[0];
+        var b = document.createElement('span'); b.textContent = it[1];
+        li.appendChild(a); li.appendChild(b); ul.appendChild(li);
+      });
+      box.appendChild(h3); box.appendChild(ul);
+    });
+    box.hidden = false;
+  }
+
+  fields.day.el.addEventListener('change', function(){ renderChecklist(fields.day.el.value); });
+
+  // Updated with your Google Apps Script URL
+  var SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxC_6-Zncf_rm5ZS5BIuKZw4xtC6Aueq64AVRxokrsMr1COtHyujn7Ak_jxFLeFSLenUA/exec';
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function entryRows(data){
+    var d = new Date(data.submittedAt);
+    var date = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+    var time = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    var plan = WORKOUTS[data.day] || [];
+    var out = [];
+    if (data.custom) {
+      data.custom.forEach(function(t){ out.push([date, time, data.name, data.weight, data.unit, 'Custom', t[0], t[1], t[2]]); });
+      return out;
+    }
+    data.exercises.forEach(function(k){
+      var p = k.split(':'), sec = plan[+p[0]], it = sec.items[+p[1]];
+      out.push([date, time, data.name, data.weight, data.unit, data.day, sec.title, it[0], it[1]]);
+    });
+    if (!out.length) out.push([date, time, data.name, data.weight, data.unit, data.day, '', '', '']);
+    return out;
+  }
+
+  function sendToSheet(data){
+    if (!SHEETS_URL) return Promise.reject(new Error('not configured'));
+    var rows = entryRows(data), chunks = [];
+    for (var i = 0; i < rows.length; i += 40) chunks.push(rows.slice(i, i + 40));
+    return chunks.reduce(function(p, c){
+      return p.then(function(){
+        return fetch(SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {'Content-Type': 'text/plain;charset=utf-8'},
+          body: JSON.stringify({rows: c})
+        });
+      });
+    }, Promise.resolve());
+  }
+
+  function validate(){
+    var ok = true, msg = {};
+    var n = fields.name.el.value.trim();
+    var w = parseFloat(fields.weight.el.value);
+    var d = fields.day.el.value;
+    if (n.length < 2) msg.name = 'Enter your name.';
+    if (isNaN(w) || w <= 0 || w > 700) msg.weight = 'Enter a weight between 1 and 700.';
+    if (!d) msg.day = 'Choose a workout day.';
+    Object.keys(fields).forEach(function(k){
+      fields[k].err.textContent = msg[k] || '';
+      fields[k].el.classList.toggle('invalid', !!msg[k]);
+      if (msg[k]) ok = false;
+    });
+    return ok;
+  }
+
+  Object.keys(fields).forEach(function(k){
+    fields[k].el.addEventListener('input', function(){
+      fields[k].err.textContent = '';
+      fields[k].el.classList.remove('invalid');
+    });
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!validate()) {
+      var bad = form.querySelector('.invalid'); if (bad) bad.focus();
+      return;
+    }
+    var data = {
+      name: fields.name.el.value.trim(),
+      weight: parseFloat(fields.weight.el.value),
+      unit: document.getElementById('unit').value,
+      day: fields.day.el.value,
+      exercises: Array.prototype.map.call(exBox.querySelectorAll('input:checked'), function(c){ return c.value; }),
+      submittedAt: new Date().toISOString()
+    };
+    btn.disabled = true; btn.textContent = 'Saving...';
+    document.getElementById('formErr').textContent = '';
+
+    sendToSheet(data).then(function(){
+      document.getElementById('sName').textContent = data.name;
+      document.getElementById('rName').textContent = data.name;
+      document.getElementById('rWeight').textContent = data.weight + ' ' + data.unit;
+      document.getElementById('rDay').textContent = data.day;
+      renderPlan(data.day, data.exercises);
+      lastFlow = 'form';
+      formView.hidden = true; successView.hidden = false;
+      window.scrollTo(0, 0);
+      btn.disabled = false; btn.textContent = 'Save check-in';
+      document.getElementById('againBtn').focus();
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = 'Save check-in';
+      document.getElementById('formErr').textContent = 'Could not save your check-in. Check your connection and try again.';
+    });
+  });
+
+  var camInput = document.getElementById('camInput');
+  var shot = document.getElementById('shot');
+  var shotImg = document.getElementById('shotImg');
+  var fileInput = document.getElementById('fileInput');
+  var sheet = document.getElementById('sheet');
+  function closeSheet(){ sheet.hidden = true; }
+  document.getElementById('camBtn').addEventListener('click', function(){ sheet.hidden = false; document.getElementById('optTake').focus(); });
+  document.getElementById('optTake').addEventListener('click', function(){ closeSheet(); camInput.click(); });
+  document.getElementById('optFile').addEventListener('click', function(){ closeSheet(); fileInput.click(); });
+  document.getElementById('optCancel').addEventListener('click', closeSheet);
+  sheet.addEventListener('click', function(e){ if (e.target === sheet) closeSheet(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeSheet(); });
+  var currentFile = null;
+  function onPick(inp){
+    var f = inp.files && inp.files[0];
+    if (!f) return;
+    if (shotImg.src && shotImg.src.indexOf('blob:') === 0) URL.revokeObjectURL(shotImg.src);
+    shotImg.src = URL.createObjectURL(f);
+    currentFile = f;
+    document.getElementById('shotMsg').textContent = '';
+    shot.hidden = false;
+  }
+  camInput.addEventListener('change', function(){ onPick(camInput); });
+  fileInput.addEventListener('change', function(){ onPick(fileInput); });
+  function compressPhoto(file, ok, fail){
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function(){
+      var r = Math.min(1, 900 / Math.max(img.naturalWidth, img.naturalHeight));
+      var w = Math.round(img.naturalWidth * r), h = Math.round(img.naturalHeight * r);
+      var c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      ok({w: w, h: h, data: c.toDataURL('image/jpeg', 0.72).split(',')[1]});
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); fail(); };
+    img.src = url;
+  }
+
+  document.getElementById('shotSave').addEventListener('click', function(){
+    var msg = document.getElementById('shotMsg'), sb = document.getElementById('shotSave');
+    if (!currentFile) return;
+    if (!SHEETS_URL) { msg.textContent = 'Not connected to Google Sheet.'; return; }
+    sb.disabled = true; msg.textContent = 'Saving...';
+    compressPhoto(currentFile, function(p){
+      var d = new Date();
+      p.date = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+      p.time = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+      fetch(SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
+        body: JSON.stringify({photo: p})
+      }).then(function(){
+        msg.textContent = 'Photo saved to Google Sheet (' + p.date + ' ' + p.time + ').';
+        sb.disabled = false;
+      }).catch(function(){
+        msg.textContent = 'Could not save the photo. Try again.';
+        sb.disabled = false;
+      });
+    }, function(){
+      msg.textContent = 'Could not read this photo.';
+      sb.disabled = false;
+    });
+  });
+  document.getElementById('shotClear').addEventListener('click', function(){
+    shotImg.removeAttribute('src'); shot.hidden = true; camInput.value = ''; fileInput.value = ''; currentFile = null;
+  });
+
+  // Login (first time only) + side menu with profile
+  var loginView = document.getElementById('loginView');
+  var menuBtn = document.getElementById('menuBtn'), drawer = document.getElementById('drawer');
+  var logoutBtn = document.getElementById('logoutBtn'), logoutTimer = null;
+  var profile = null;
+  try {
+    var rp = JSON.parse(localStorage.getItem('profile') || 'null');
+    if (rp && rp.name && rp.phone && rp.dob) profile = rp;
+  } catch(e){ profile = null; }
+  function closeDrawer(){
+    drawer.hidden = true;
+    logoutBtn.textContent = 'Log out'; clearTimeout(logoutTimer);
+  }
+  function openDrawer(){
+    var info = document.getElementById('drawerInfo'); info.innerHTML = '';
+    [['Name', profile ? profile.name : ''], ['Phone', profile ? profile.phone : ''], ['Birthday', profile ? profile.dob : '']].forEach(function(r){
+      var dt = document.createElement('dt'); dt.textContent = r[0];
+      var dd = document.createElement('dd'); dd.textContent = r[1];
+      info.appendChild(dt); info.appendChild(dd);
+    });
+    drawer.hidden = false;
+    document.getElementById('drawerClose').focus();
+  }
+  menuBtn.addEventListener('click', openDrawer);
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  drawer.addEventListener('click', function(e){ if (e.target === drawer) closeDrawer(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeDrawer(); });
+  logoutBtn.addEventListener('click', function(){
+    if (logoutBtn.textContent === 'Log out') {
+      logoutBtn.textContent = 'Tap again to log out';
+      logoutTimer = setTimeout(function(){ logoutBtn.textContent = 'Log out'; }, 3000);
+      return;
+    }
+    profile = null;
+    try { localStorage.removeItem('profile'); } catch(e){}
+    document.getElementById('lform').reset();
+    closeDrawer(); show('loginView');
+  });
+
+  // Login form submission with Google Apps Script Integration
+  document.getElementById('lform').addEventListener('submit', function(e){
+    e.preventDefault();
+    var lErr = document.getElementById('lErr');
+    var n = document.getElementById('lName').value.trim().replace(/\s+/g, ' ');
+    var ph = document.getElementById('lPhone').value.trim();
+    var dob = document.getElementById('lDob').value;
+    var digits = ph.replace(/\D/g, '');
+    var today = new Date(), todayStr = today.getFullYear() + '-' + pad(today.getMonth()+1) + '-' + pad(today.getDate());
+    if (n.length < 2) { lErr.textContent = 'Enter your name.'; return; }
+    if (!/^[+\d][\d\s\-()]*$/.test(ph) || digits.length < 7 || digits.length > 15) { lErr.textContent = 'Enter a valid phone number.'; return; }
+    if (!dob || dob < '1900-01-01' || dob > todayStr) { lErr.textContent = 'Choose your birthday.'; return; }
+    lErr.textContent = '';
+    
+    profile = {name: n, phone: ph, dob: dob};
+    var submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logging in...';
+
+    // Send login info to Google Drive / Sheets
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ name: n, phone: ph, dob: dob })
+    }).then(function(){
+      try { localStorage.setItem('profile', JSON.stringify(profile)); } catch(e){}
+      show('homeView');
+    }).catch(function(){
+      lErr.textContent = 'Error connecting. Please try again.';
+    }).finally(function(){
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Log in';
+    });
+  });
+
+  var VIEWS = ['loginView','homeView','formView','customView','successView','workoutView','previewView','planView'];
+  function show(id){
+    VIEWS.forEach(function(v){ document.getElementById(v).hidden = (v !== id); });
+    bmiView.hidden = true;
+    menuBtn.hidden = (id !== 'homeView');
+    closeDrawer();
+    window.scrollTo(0, 0);
+  }
+  function goHome(){ show('homeView'); resetCustom(); }
+  document.getElementById('homeBtn1').addEventListener('click', goHome);
+  document.getElementById('homeBtn2').addEventListener('click', goHome);
+  document.getElementById('homeBtn3').addEventListener('click', function(){ show('workoutView'); });
+
+  renderInto(document.getElementById('cList'), CUSTOM_PLAN);
+
+  document.getElementById('bmiBtn').addEventListener('click', function(){
+    bmiView.hidden = false;
+    document.getElementById('bHeight').focus();
+  });
+  function closeBmi(){ bmiView.hidden = true; }
+  document.getElementById('homeBtn4').addEventListener('click', closeBmi);
+  bmiView.addEventListener('click', function(e){ if (e.target === bmiView) closeBmi(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeBmi(); });
+
+  document.getElementById('bform').addEventListener('submit', function(e){
+    e.preventDefault();
+    var bErr = document.getElementById('bErr'), out = document.getElementById('bResult');
+    var h = parseFloat(document.getElementById('bHeight').value);
+    var w = parseFloat(document.getElementById('bWeight').value);
+    var age = parseInt(document.getElementById('bAge').value, 10);
+    var unit = document.getElementById('bUnit').value;
+    var male = document.getElementById('bSex').value === 'male';
+    var act = parseFloat(document.getElementById('bAct').value);
+    var kg = unit === 'lb' ? w * 0.45359237 : w;
+    out.hidden = true;
+    if (isNaN(h) || h < 50 || h > 260) { bErr.textContent = 'Enter your height in cm (50 to 260).'; return; }
+    if (isNaN(w) || kg < 10 || kg > 400) { bErr.textContent = 'Enter a valid body weight.'; return; }
+    if (isNaN(age) || age < 10 || age > 100) { bErr.textContent = 'Enter your age (10 to 100).'; return; }
+    bErr.textContent = '';
+
+    var m = h / 100, bmi = kg / (m * m);
+    var cat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal weight' : bmi < 30 ? 'Overweight' : 'Obese';
+    var tdee = Math.round((10 * kg + 6.25 * h - 5 * age + (male ? 5 : -161)) * act);
+    var lose = Math.min(tdee, Math.max(tdee - 500, male ? 1500 : 1200));
+    var gain = tdee + 500;
+    var conv = unit === 'lb' ? 2.20462262 : 1;
+    var range = (18.5 * m * m * conv).toFixed(1) + ' - ' + (24.9 * m * m * conv).toFixed(1) + ' ' + unit;
+
+    out.innerHTML = '';
+    var dl = document.createElement('dl'); dl.className = 'summary';
+    [['BMI', bmi.toFixed(1)], ['Category', cat], ['Healthy weight', range],
+     ['Maintain weight', tdee + ' kcal/day'], ['Lose weight', lose + ' kcal/day'], ['Gain weight', gain + ' kcal/day']
+    ].forEach(function(r){
+      var dt = document.createElement('dt'); dt.textContent = r[0];
+      var dd = document.createElement('dd'); dd.textContent = r[1];
+      dl.appendChild(dt); dl.appendChild(dd);
+    });
+    var note = document.createElement('p'); note.className = 'note';
+    note.textContent = 'Estimates only (Mifflin-St Jeor formula). Lose and gain figures are about 0.5 kg per week. BMI is meant for adults, and under 18 it is only a rough guide. This is not medical advice.';
+    out.appendChild(dl); out.appendChild(note);
+    out.hidden = false;
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    out.scrollIntoView({behavior: 'smooth', block: 'start'});
+  });
+
+  document.getElementById('customBtn').addEventListener('click', function(){
+    show('customView');
+    fillPlanSelect();
+    document.getElementById('cName').focus();
+  });
+
+  // Workout hub, Preview workout, My plan
+  document.getElementById('workoutBtn').addEventListener('click', function(){ show('workoutView'); });
+  document.getElementById('backHome1').addEventListener('click', goHome);
+  document.getElementById('backWorkout2').addEventListener('click', function(){ show('workoutView'); });
+  document.getElementById('backWorkout3').addEventListener('click', function(){ show('workoutView'); });
+
+  var pvList = document.getElementById('pvList');
+  function fmtStamp(iso){
+    var d = new Date(iso);
+    if (!iso || isNaN(d.getTime())) return '';
+    return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  function renderPreviewList(){
+    pvList.innerHTML = '';
+    if (!previews.length) {
+      var e = document.createElement('p'); e.className = 'sub'; e.textContent = 'No saved schedules yet. Make one in My plan and press Done.';
+      pvList.appendChild(e); return;
+    }
+    previews.forEach(function(pr){
+      var card = document.createElement('div'); card.className = 'sheetcard';
+      var head = document.createElement('div'); head.className = 'sheethead';
+      var left = document.createElement('div');
+      var t = document.createElement('strong'); t.textContent = pr.name; left.appendChild(t);
+      var st = fmtStamp(pr.savedAt);
+      if (st) { var dt = document.createElement('div'); dt.className = 'stamp'; dt.textContent = 'Saved ' + st; left.appendChild(dt); }
+      var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'link'; rm.textContent = 'Remove';
+      var rmTimer = null;
+      rm.addEventListener('click', function(){
+        if (rm.textContent === 'Remove') {
+          rm.textContent = 'Tap again to remove';
+          rmTimer = setTimeout(function(){ rm.textContent = 'Remove'; }, 3000);
+          return;
+        }
+        clearTimeout(rmTimer);
+        previews = previews.filter(function(x){ return x.id !== pr.id; }); storePreviews();
+        renderPreviewList();
+      });
+      head.appendChild(left); head.appendChild(rm); card.appendChild(head);
+      var wrap = document.createElement('div'); wrap.className = 'sheetwrap';
+      var tbl = document.createElement('table'); tbl.className = 'sheet-tbl';
+      var thead = document.createElement('thead'), hr = document.createElement('tr');
+      ['Exercise', 'Sets', 'Reps', 'Kg'].forEach(function(h){ var th = document.createElement('th'); th.textContent = h; hr.appendChild(th); });
+      thead.appendChild(hr); tbl.appendChild(thead);
+      var tb = document.createElement('tbody');
+      if (!pr.items.length) {
+        var er = document.createElement('tr'), ec = document.createElement('td');
+        ec.colSpan = 4; ec.textContent = 'No exercises in this schedule yet.'; er.appendChild(ec); tb.appendChild(er);
+      }
+      pr.items.forEach(function(it){
+        var tr = document.createElement('tr');
+        [it.name, it.sets, it.reps, it.kg].forEach(function(v){ var td = document.createElement('td'); td.textContent = v || '-'; tr.appendChild(td); });
+        tb.appendChild(tr);
+      });
+      tbl.appendChild(tb); wrap.appendChild(tbl); card.appendChild(wrap); pvList.appendChild(card);
+    });
+  }
+  document.getElementById('previewBtn').addEventListener('click', function(){
+    renderPreviewList(); show('previewView');
+  });
+
+  // My plan: several schedules, each with exercises and sets / reps / kg
+  var plans = [];
+  function cleanPlans(a){
+    return a.filter(function(x){ return x && Array.isArray(x.items); }).map(function(x){
+      return {
+        id: x.id || Date.now(),
+        name: String(x.name || '').slice(0, 40),
+        savedAt: String(x.savedAt || '').slice(0, 40),
+        items: x.items.filter(function(it){ return it && it.name; }).slice(0, 60).map(function(it){
+          return {name: String(it.name).slice(0, 80), sets: String(it.sets == null ? '' : it.sets).slice(0, 12), reps: String(it.reps == null ? '' : it.reps).slice(0, 12), kg: String(it.kg == null ? '' : it.kg).slice(0, 12)};
+        })
+      };
+    });
+  }
+  try {
+    var rawPlans = localStorage.getItem('plans');
+    if (rawPlans) {
+      var pa = JSON.parse(rawPlans);
+      if (Array.isArray(pa)) plans = cleanPlans(pa);
+    } else {
+      var old = JSON.parse(localStorage.getItem('myPlan') || '[]');
+      if (Array.isArray(old) && old.length) {
+        var its = [];
+        old.forEach(function(k){
+          if (k.indexOf('n:') === 0) its.push({name: k.slice(2), sets: '', reps: '', kg: ''});
+          else { var q = k.split(':'), sec = CUSTOM_PLAN[+q[0]]; if (sec && sec.items[+q[1]]) its.push({name: sec.items[+q[1]][0], sets: '', reps: '', kg: ''}); }
+        });
+        if (its.length) { plans = [{id: Date.now(), name: 'Schedule 1', items: its}]; localStorage.setItem('plans', JSON.stringify(plans)); }
+      }
+    }
+  } catch(e){ plans = []; }
+  function storePlans(){ try { localStorage.setItem('plans', JSON.stringify(plans)); } catch(e){} }
+
+  var previews = [];
+  try {
+    var rawPv = JSON.parse(localStorage.getItem('previews') || '[]');
+    if (Array.isArray(rawPv)) previews = cleanPlans(rawPv);
+  } catch(e){ previews = []; }
+  function storePreviews(){ try { localStorage.setItem('previews', JSON.stringify(previews)); } catch(e){} }
+
+  var planList = document.getElementById('planList'), schedEditor = document.getElementById('schedEditor');
+  var schedListEl = document.getElementById('schedList'), schedItems = document.getElementById('schedItems');
+  var schedName = document.getElementById('schedName'), schedPick = document.getElementById('schedPick');
+  var cur = null, delTimer = null;
+
+  function schedTitle(pl, i){ return pl.name || ('Schedule ' + (i + 1)); }
+  function renderSchedList(){
+    schedListEl.innerHTML = '';
+    document.getElementById('planEmpty').hidden = plans.length > 0;
+    plans.forEach(function(pl, i){
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'big alt';
+      b.textContent = schedTitle(pl, i) + '  (' + pl.items.length + (pl.items.length === 1 ? ' exercise)' : ' exercises)');
+      b.addEventListener('click', function(){ openSched(i); });
+      schedListEl.appendChild(b);
+    });
+  }
+
+  function renderItems(){
+    schedItems.innerHTML = '';
+    if (!cur.items.length) {
+      var n = document.createElement('p'); n.className = 'sub'; n.textContent = 'No exercises yet. Add one below.';
+      schedItems.appendChild(n); return;
+    }
+    cur.items.forEach(function(it, i){
+      var card = document.createElement('div'); card.className = 'item';
+      var top = document.createElement('div'); top.className = 'top';
+      var nm = document.createElement('span'); nm.textContent = it.name;
+      var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm';
+      rm.setAttribute('aria-label', 'Remove ' + it.name); rm.innerHTML = '&times;';
+      rm.addEventListener('click', function(){ cur.items.splice(i, 1); storePlans(); renderItems(); });
+      top.appendChild(nm); top.appendChild(rm); card.appendChild(top);
+      var nums = document.createElement('div'); nums.className = 'nums';
+      [['Sets', 'sets', 'numeric'], ['Reps', 'reps', 'text'], ['Kg', 'kg', 'decimal']].forEach(function(f){
+        var lab = document.createElement('label'); lab.appendChild(document.createTextNode(f[0]));
+        var inp = document.createElement('input'); inp.type = 'text'; inp.inputMode = f[2]; inp.maxLength = 12;
+        inp.value = it[f[1]]; inp.setAttribute('aria-label', f[0] + ' for ' + it.name);
+        inp.addEventListener('input', function(){ it[f[1]] = inp.value; storePlans(); });
+        lab.appendChild(inp); nums.appendChild(lab);
+      });
+      card.appendChild(nums); schedItems.appendChild(card);
+    });
+  }
+
+  function buildPicker(){
+    schedPick.innerHTML = '';
+    var first = document.createElement('option'); first.value = ''; first.textContent = 'Choose an exercise'; schedPick.appendChild(first);
+    CUSTOM_PLAN.forEach(function(sec){
+      var g = document.createElement('optgroup'); g.label = sec.title;
+      sec.items.forEach(function(it){ var o = document.createElement('option'); o.value = it[0]; o.textContent = it[0]; g.appendChild(o); });
+      schedPick.appendChild(g);
+    });
+    if (newEx.length) {
+      var gn = document.createElement('optgroup'); gn.label = 'New';
+      newEx.forEach(function(x){ var o = document.createElement('option'); o.value = x.name; o.textContent = x.name; gn.appendChild(o); });
+      schedPick.appendChild(gn);
+    }
+  }
+
+  function addToSched(name){
+    var low = name.toLowerCase();
+    if (cur.items.some(function(it){ return it.name.toLowerCase() === low; })) return false;
+    if (cur.items.length >= 60) return false;
+    cur.items.push({name: name, sets: '', reps: '', kg: ''});
+    storePlans(); renderItems(); return true;
+  }
+
+  function openSched(i){
+    cur = plans[i];
+    schedName.value = cur.name;
+    renderItems(); buildPicker();
+    planList.hidden = true; schedEditor.hidden = false;
+    window.scrollTo(0, 0);
+  }
+  function closeSched(){
+    var savedName = null, savedId = null;
+    if (cur) {
+      if (!cur.name.trim()) cur.name = 'Schedule ' + (plans.indexOf(cur) + 1);
+      var snap = {id: cur.id, name: cur.name, savedAt: new Date().toISOString(), items: cur.items.map(function(it){ return {name: it.name, sets: it.sets, reps: it.reps, kg: it.kg}; })};
+      var at = -1;
+      previews.forEach(function(x, k){ if (x.id === snap.id) at = k; });
+      if (at > -1) previews[at] = snap; else previews.push(snap);
+      storePreviews(); savedName = cur.name; savedId = cur.id;
+    }
+    storePlans(); cur = null; renderSchedList();
+    var sm = document.getElementById('schedMsg');
+    if (savedName) { sm.textContent = '\u201C' + savedName + '\u201D saved to Preview workout.'; sm.hidden = false; }
+    schedEditor.hidden = true; planList.hidden = false;
+    var dbtn = document.getElementById('schedDelete'); dbtn.textContent = 'Delete schedule'; clearTimeout(delTimer);
+    window.scrollTo(0, 0);
+    if (savedId !== null) {
+      renderPreviewList(); show('previewView');
+    }
+  }
+
+  document.getElementById('planBtn').addEventListener('click', function(){
+    renderSchedList(); document.getElementById('schedMsg').hidden = true; schedEditor.hidden = true; planList.hidden = false; show('planView');
+  });
+  document.getElementById('schedNew').addEventListener('click', function(){
+    plans.push({id: Date.now(), name: 'Schedule ' + (plans.length + 1), items: []});
+    storePlans(); openSched(plans.length - 1);
+  });
+  schedName.addEventListener('input', function(){ if (cur) { cur.name = schedName.value; storePlans(); } });
+  document.getElementById('schedAddPick').addEventListener('click', function(){
+    if (schedPick.value) { addToSched(schedPick.value); schedPick.value = ''; }
+  });
+  function addTyped(){
+    var inp = document.getElementById('schedNewEx');
+    var v = inp.value.trim().replace(/\s+/g, ' ');
+    if (!v) { inp.focus(); return; }
+    var low = v.toLowerCase();
+    var known = CUSTOM_PLAN.some(function(sec){ return sec.items.some(function(it){ return it[0].toLowerCase() === low; }); })
+      || newEx.some(function(x){ return x.name.toLowerCase() === low; });
+    if (!known && newEx.length < 30) { newEx.push({name: v, on: false}); storeNew(); renderNew(); buildPicker(); }
+    addToSched(v);
+    inp.value = ''; inp.focus();
+  }
+  document.getElementById('schedAddNew').addEventListener('click', addTyped);
+  document.getElementById('schedNewEx').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { e.preventDefault(); addTyped(); }
+  });
+  document.getElementById('schedDone').addEventListener('click', closeSched);
+  document.getElementById('schedDelete').addEventListener('click', function(){
+    var dbtn = this;
+    if (dbtn.textContent === 'Delete schedule') {
+      dbtn.textContent = 'Tap again to delete';
+      delTimer = setTimeout(function(){ dbtn.textContent = 'Delete schedule'; }, 3000);
+      return;
+    }
+    clearTimeout(delTimer);
+    plans.splice(plans.indexOf(cur), 1); cur = null; storePlans(); renderSchedList();
+    document.getElementById('schedMsg').hidden = true;
+    dbtn.textContent = 'Delete schedule';
+    schedEditor.hidden = true; planList.hidden = false; window.scrollTo(0, 0);
+  });
+
+  function loadNew(){
+    try {
+      var a = JSON.parse(localStorage.getItem('newEx') || '[]');
+      return Array.isArray(a) ? a.filter(function(x){ return typeof x === 'string' && x; }).slice(0, 30) : [];
+    } catch(e){ return []; }
+  }
+  function storeNew(){
+    try { localStorage.setItem('newEx', JSON.stringify(newEx.map(function(x){ return x.name; }))); } catch(e){}
+  }
+  var newEx = loadNew().map(function(n){ return {name: n, on: false}; });
+  var newBox = document.getElementById('cNewList');
+  function renderNew(){
+    newBox.innerHTML = '';
+    if (!newEx.length) { newBox.hidden = true; return; }
+    var head = document.createElement('div'); head.className = 'exhead';
+    var t = document.createElement('strong'); t.textContent = 'New';
+    head.appendChild(t); newBox.appendChild(head);
+    newEx.forEach(function(x, i){
+      var lab = document.createElement('label'); lab.className = 'opt';
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = x.on;
+      cb.addEventListener('change', function(){ x.on = cb.checked; });
+      var nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = x.name;
+      var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm';
+      rm.setAttribute('aria-label', 'Remove ' + x.name); rm.innerHTML = '&times;';
+      rm.addEventListener('click', function(ev){ ev.preventDefault(); ev.stopPropagation(); newEx.splice(i, 1); storeNew(); renderNew(); });
+      lab.appendChild(cb); lab.appendChild(nm); lab.appendChild(rm); newBox.appendChild(lab);
+    });
+    newBox.hidden = false;
+  }
+  function addNew(){
+    var inp = document.getElementById('cNew');
+    var v = inp.value.trim().replace(/\s+/g, ' ');
+    if (!v) { inp.focus(); return; }
+    var dup = newEx.some(function(x){ return x.name.toLowerCase() === v.toLowerCase(); });
+    if (!dup && newEx.length < 30) { newEx.push({name: v, on: true}); storeNew(); }
+    inp.value = '';
+    renderNew();
+    inp.focus();
+  }
+  document.getElementById('cAdd').addEventListener('click', addNew);
+  document.getElementById('cNew').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { e.preventDefault(); addNew(); }
+  });
+
+  renderNew();
+
+  var cPlanSel = document.getElementById('cPlanSel'), cPlanMsg = document.getElementById('cPlanMsg');
+  function fillPlanSelect(){
+    cPlanSel.innerHTML = '';
+    plans.forEach(function(pl, i){
+      var o = document.createElement('option'); o.value = String(i); o.textContent = schedTitle(pl, i); cPlanSel.appendChild(o);
+    });
+    var n = document.createElement('option'); n.value = 'new'; n.textContent = '+ New schedule'; cPlanSel.appendChild(n);
+    cPlanMsg.textContent = '';
+  }
+  function resetCustom(){
+    renderInto(document.getElementById('cList'), CUSTOM_PLAN);
+    newEx.forEach(function(x){ x.on = false; });
+    renderNew();
+    document.getElementById('cErr').textContent = '';
+    fillPlanSelect(); cPlanSel.value = 'new';
+  }
+  document.getElementById('cClear').addEventListener('click', resetCustom);
+
+  function tickedNames(){
+    var names = [];
+    Array.prototype.forEach.call(document.getElementById('cList').querySelectorAll('input:checked'), function(c){
+      var q = c.value.split(':'), sec = CUSTOM_PLAN[+q[0]];
+      if (sec && sec.items[+q[1]]) names.push(sec.items[+q[1]][0]);
+    });
+    newEx.forEach(function(x){ if (x.on) names.push(x.name); });
+    return names;
+  }
+  document.getElementById('cPlanAdd').addEventListener('click', function(){
+    var names = tickedNames();
+    if (!names.length) { cPlanMsg.textContent = 'Tick at least one exercise first.'; return; }
+    var pl, v = cPlanSel.value;
+    if (v === 'new' || !plans[+v]) { pl = {id: Date.now(), name: 'Schedule ' + (plans.length + 1), items: []}; plans.push(pl); }
+    else pl = plans[+v];
+    var added = 0;
+    names.forEach(function(nm){
+      var low = nm.toLowerCase();
+      if (pl.items.length < 60 && !pl.items.some(function(it){ return it.name.toLowerCase() === low; })) {
+        pl.items.push({name: nm, sets: '', reps: '', kg: ''}); added++;
+      }
+    });
+    storePlans();
+    var idx = plans.indexOf(pl), title = schedTitle(pl, idx);
+    fillPlanSelect(); cPlanSel.value = String(idx);
+    cPlanMsg.textContent = 'Added ' + added + (added === 1 ? ' exercise' : ' exercises') + ' to ' + title +
+      (added < names.length ? ' (' + (names.length - added) + ' already there).' : '.');
+  });
+
+  document.getElementById('cform').addEventListener('submit', function(e){
+    e.preventDefault();
+    var cErr = document.getElementById('cErr'), cBtn = document.getElementById('cSubmit');
+    var n = document.getElementById('cName').value.trim();
+    var w = parseFloat(document.getElementById('cWeight').value);
+    if (n.length < 2) { cErr.textContent = 'Enter your name.'; return; }
+    if (isNaN(w) || w <= 0 || w > 700) { cErr.textContent = 'Enter a weight between 1 and 700.'; return; }
+    var items = [];
+    Array.prototype.forEach.call(document.getElementById('cList').querySelectorAll('input:checked'), function(c){
+      var q = c.value.split(':'), sec = CUSTOM_PLAN[+q[0]], it = sec.items[+q[1]];
+      items.push([sec.title, it[0], it[1]]);
+    });
+    newEx.forEach(function(x){ if (x.on) items.push(['New', x.name, '']); });
+    if (!items.length) { cErr.textContent = 'Pick or add at least one exercise.'; return; }
+    cErr.textContent = '';
+    var unit = document.getElementById('cUnit').value;
+    var data = {name: n, weight: w, unit: unit, day: 'Custom', custom: items, submittedAt: new Date().toISOString()};
+    cBtn.disabled = true; cBtn.textContent = 'Saving...';
+    sendToSheet(data).then(function(){
+      document.getElementById('sName').textContent = n;
+      document.getElementById('rName').textContent = n;
+      document.getElementById('rWeight').textContent = w + ' ' + unit;
+      document.getElementById('rDay').textContent = 'Custom';
+      var box = document.getElementById('plan'); box.innerHTML = '';
+      var h = document.createElement('h2'); h.textContent = 'Your exercises (' + items.length + ')'; box.appendChild(h);
+      var ul = document.createElement('ul'); ul.style.marginTop = '10px';
+      items.forEach(function(t){
+        var li = document.createElement('li');
+        var a = document.createElement('span'); a.textContent = t[1];
+        var b = document.createElement('span'); b.textContent = t[2];
+        li.appendChild(a); li.appendChild(b); ul.appendChild(li);
+      });
+      box.appendChild(ul); box.hidden = false;
+      lastFlow = 'custom';
+      customView.hidden = true; successView.hidden = false;
+      window.scrollTo(0, 0);
+      cBtn.disabled = false; cBtn.textContent = 'Save check-in';
+    }).catch(function(){
+      cBtn.disabled = false; cBtn.textContent = 'Save check-in';
+      cErr.textContent = 'Could not save your check-in. Check your connection and try again.';
+    });
+  });
+
+  show(profile ? 'homeView' : 'loginView');
+
+  document.getElementById('againBtn').addEventListener('click', function(){
+    if (lastFlow === 'custom') {
+      document.getElementById('cform').reset();
+      renderInto(document.getElementById('cList'), CUSTOM_PLAN);
+      newEx.forEach(function(x){ x.on = false; }); renderNew();
+      fillPlanSelect();
+      successView.hidden = true; customView.hidden = false;
+      document.getElementById('cName').focus();
+      return;
+    }
+    form.reset();
+    renderChecklist('');
+    successView.hidden = true; formView.hidden = false;
+    fields.name.el.focus();
+  });
+})();
+</script>
+</body>
+</html>
