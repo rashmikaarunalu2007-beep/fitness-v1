@@ -91,14 +91,7 @@ button.ghost{background:transparent; color:var(--accent); border:1.5px solid var
 .big{padding:18px; font-size:1.1rem; margin-top:12px}
 .big.alt{background:transparent; color:var(--accent); border:1.5px solid var(--accent)}
 .home h1{font-size:2rem; letter-spacing:.16em; margin:0}
-.titlerow{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:10px}
-.cam{width:44px; height:44px; padding:0; border-radius:50%; background:transparent; color:var(--accent); border:1.5px solid var(--accent); display:grid; place-items:center; flex:none}
-.cam svg{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
-.shot{margin:4px 0 6px; text-align:center}
-.shotbtns{display:flex; gap:10px; justify-content:center; align-items:center}
-.shotbtns button{width:auto; padding:9px 18px; font-size:.9rem}
-.shot .msg{margin:6px 0 0; color:var(--muted); font-size:.85rem; min-height:1.1em}
-.shot img{display:block; max-width:100%; max-height:240px; margin:0 auto 6px; border-radius:12px; border:1px solid var(--line)}
+.titlerow{display:flex; align-items:center; justify-content:center; margin-bottom:10px}
 .logo{display:block; width:100%; max-width:220px; height:auto; margin:0 auto 12px}
 :root[data-theme="dark"] .logo{filter:invert(1)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo{filter:invert(1)}}
@@ -159,7 +152,7 @@ body{
 }
 h1,h2,h3{font-family:var(--font-head); font-weight:700; letter-spacing:.01em}
 h1{font-size:2.05rem; line-height:1.1}
-.home h1{font-size:2.7rem; letter-spacing:.16em}
+.home h1{font-size:2.7rem; letter-spacing:.16em; padding-left:.16em; text-align:center; width:100%}
 .plan h2{font-size:1.4rem}
 .plan h3{font-size:1.15rem}
 .sub{font-size:1rem; line-height:1.6}
@@ -174,6 +167,33 @@ button[type=submit],.big:not(.alt),.sheetbox button:first-child{box-shadow:0 12p
 .logo{max-width:200px}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:reduce){button{transition:none}}
+
+/* ---- RESPONSIVE: adapts to any screen size ---- */
+:root{--w:440px}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+body{min-height:100vh; min-height:100dvh; padding:60px clamp(10px,3.5vw,28px) clamp(16px,4vw,32px)}
+.card,.modalbox,.sheetbox{max-width:var(--w)}
+.card{padding:clamp(22px,5.5vw,40px) clamp(16px,5.5vw,36px)}
+.modalbox{padding:clamp(20px,5vw,32px) clamp(16px,5vw,28px) 24px}
+.home h1{font-size:clamp(1.9rem,9.5vw,2.9rem); letter-spacing:.14em; padding-left:.14em}
+.logo{max-width:clamp(150px,48vw,260px)}
+.big{font-size:clamp(1.15rem,4.6vw,1.45rem)}
+input,select,textarea,button{font-size:max(16px,1rem)}
+.item .nums{gap:clamp(6px,2vw,12px)}
+@media (min-width:600px){ :root{--w:540px} }
+@media (min-width:900px){ :root{--w:660px} body{padding-top:72px} h1{font-size:2.3rem} .plan h2{font-size:1.5rem} }
+@media (min-width:1280px){ :root{--w:740px} }
+@media (max-width:360px){
+  .row select{width:80px}
+  .item .nums{grid-template-columns:1fr 1fr 1fr}
+  .shotbtns button,.addbtn{padding-left:14px; padding-right:14px}
+  .sheet-tbl{font-size:.82rem}
+  .sheet-tbl th,.sheet-tbl td{padding:7px 6px}
+}
+@media (max-height:520px) and (orientation:landscape){
+  body{align-items:flex-start; padding-top:64px}
+  .card{padding-top:20px; padding-bottom:20px}
+}
 </style>
 </head>
 <body>
@@ -217,26 +237,6 @@ button[type=submit],.big:not(.alt),.sheetbox button:first-child{box-shadow:0 12p
   ">
     <div class="titlerow">
       <h1>FITNESS</h1>
-      <button type="button" class="cam" id="camBtn" aria-label="Take a photo">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.6"/></svg>
-      </button>
-      <input type="file" id="camInput" accept="image/*" capture="environment" hidden>
-      <input type="file" id="fileInput" accept="image/*" hidden>
-    </div>
-    <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Add a photo">
-      <div class="sheetbox">
-        <button type="button" id="optTake">Take photo</button>
-        <button type="button" class="ghost" id="optFile">Choose file</button>
-        <button type="button" class="link" id="optCancel">Cancel</button>
-      </div>
-    </div>
-    <div class="shot" id="shot" hidden>
-      <img id="shotImg" alt="Your photo">
-      <div class="shotbtns">
-        <button type="button" id="shotSave">Save photo</button>
-        <button type="button" class="link" id="shotClear">Remove photo</button>
-      </div>
-      <p class="msg" id="shotMsg" role="status"></p>
     </div>
     <button type="button" class="big" id="workoutBtn">Workout</button>
     <button type="button" class="big alt" id="bmiBtn">BMI</button>
@@ -322,6 +322,7 @@ button[type=submit],.big:not(.alt),.sheetbox button:first-child{box-shadow:0 12p
       </div>
       <p class="err" id="cErr" role="alert"></p>
     </form>
+    <button type="button" class="big alt" id="cBackWorkout">&larr; Workout</button>
   </section>
 
   <section id="workoutView" hidden>
@@ -732,74 +733,6 @@ button[type=submit],.big:not(.alt),.sheetbox button:first-child{box-shadow:0 12p
     });
   });
 
-  var camInput = document.getElementById('camInput');
-  var shot = document.getElementById('shot');
-  var shotImg = document.getElementById('shotImg');
-  var fileInput = document.getElementById('fileInput');
-  var sheet = document.getElementById('sheet');
-  function closeSheet(){ sheet.hidden = true; }
-  document.getElementById('camBtn').addEventListener('click', function(){ sheet.hidden = false; document.getElementById('optTake').focus(); });
-  document.getElementById('optTake').addEventListener('click', function(){ closeSheet(); camInput.click(); });
-  document.getElementById('optFile').addEventListener('click', function(){ closeSheet(); fileInput.click(); });
-  document.getElementById('optCancel').addEventListener('click', closeSheet);
-  sheet.addEventListener('click', function(e){ if (e.target === sheet) closeSheet(); });
-  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeSheet(); });
-  var currentFile = null;
-  function onPick(inp){
-    var f = inp.files && inp.files[0];
-    if (!f) return;
-    if (shotImg.src && shotImg.src.indexOf('blob:') === 0) URL.revokeObjectURL(shotImg.src);
-    shotImg.src = URL.createObjectURL(f);
-    currentFile = f;
-    document.getElementById('shotMsg').textContent = '';
-    shot.hidden = false;
-  }
-  camInput.addEventListener('change', function(){ onPick(camInput); });
-  fileInput.addEventListener('change', function(){ onPick(fileInput); });
-  function compressPhoto(file, ok, fail){
-    var img = new Image(), url = URL.createObjectURL(file);
-    img.onload = function(){
-      var r = Math.min(1, 900 / Math.max(img.naturalWidth, img.naturalHeight));
-      var w = Math.round(img.naturalWidth * r), h = Math.round(img.naturalHeight * r);
-      var c = document.createElement('canvas'); c.width = w; c.height = h;
-      c.getContext('2d').drawImage(img, 0, 0, w, h);
-      URL.revokeObjectURL(url);
-      ok({w: w, h: h, data: c.toDataURL('image/jpeg', 0.72).split(',')[1]});
-    };
-    img.onerror = function(){ URL.revokeObjectURL(url); fail(); };
-    img.src = url;
-  }
-
-  document.getElementById('shotSave').addEventListener('click', function(){
-    var msg = document.getElementById('shotMsg'), sb = document.getElementById('shotSave');
-    if (!currentFile) return;
-    if (!SHEETS_URL) { msg.textContent = 'Not connected to Google Sheet.'; return; }
-    sb.disabled = true; msg.textContent = 'Saving...';
-    compressPhoto(currentFile, function(p){
-      var d = new Date();
-      p.date = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
-      p.time = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
-      fetch(SHEETS_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type': 'text/plain;charset=utf-8'},
-        body: JSON.stringify({photo: p})
-      }).then(function(){
-        msg.textContent = 'Photo saved to Google Sheet (' + p.date + ' ' + p.time + ').';
-        sb.disabled = false;
-      }).catch(function(){
-        msg.textContent = 'Could not save the photo. Try again.';
-        sb.disabled = false;
-      });
-    }, function(){
-      msg.textContent = 'Could not read this photo.';
-      sb.disabled = false;
-    });
-  });
-  document.getElementById('shotClear').addEventListener('click', function(){
-    shotImg.removeAttribute('src'); shot.hidden = true; camInput.value = ''; fileInput.value = ''; currentFile = null;
-  });
-
   // Login (first time only) + side menu with profile
   var loginView = document.getElementById('loginView');
   var menuBtn = document.getElementById('menuBtn'), drawer = document.getElementById('drawer');
@@ -887,6 +820,7 @@ button[type=submit],.big:not(.alt),.sheetbox button:first-child{box-shadow:0 12p
   document.getElementById('homeBtn1').addEventListener('click', goHome);
   document.getElementById('homeBtn2').addEventListener('click', goHome);
   document.getElementById('homeBtn3').addEventListener('click', function(){ show('workoutView'); });
+  document.getElementById('cBackWorkout').addEventListener('click', function(){ show('workoutView'); });
 
   renderInto(document.getElementById('cList'), CUSTOM_PLAN);
 
@@ -984,6 +918,19 @@ button[type=submit],.big:not(.alt),.sheetbox button:first-child{box-shadow:0 12p
         renderPreviewList();
       });
       head.appendChild(left); head.appendChild(rm); card.appendChild(head);
+      var bwBox = document.createElement('div'); bwBox.className = 'field';
+      var bwLab = document.createElement('label'); bwLab.textContent = 'Body weight';
+      var bwRow = document.createElement('div'); bwRow.className = 'row';
+      var bwIn = document.createElement('input'); bwIn.type = 'number'; bwIn.inputMode = 'decimal'; bwIn.step = '0.1'; bwIn.min = '1'; bwIn.placeholder = 'e.g. 70.5';
+      bwIn.value = pr.bw || ''; bwIn.setAttribute('aria-label', 'Body weight for ' + pr.name);
+      bwIn.addEventListener('input', function(){ pr.bw = bwIn.value.slice(0, 12); storePreviews(); });
+      var bwUn = document.createElement('select'); bwUn.setAttribute('aria-label', 'Weight unit');
+      ['kg', 'lb'].forEach(function(u){ var o = document.createElement('option'); o.value = u; o.textContent = u; bwUn.appendChild(o); });
+      bwUn.value = pr.bwUnit === 'lb' ? 'lb' : 'kg';
+      bwUn.addEventListener('change', function(){ pr.bwUnit = bwUn.value; storePreviews(); });
+      bwRow.appendChild(bwIn); bwRow.appendChild(bwUn);
+      bwLab.style.marginBottom = '6px'; bwBox.style.margin = '0 0 12px';
+      bwBox.appendChild(bwLab); bwBox.appendChild(bwRow); card.appendChild(bwBox);
       var wrap = document.createElement('div'); wrap.className = 'sheetwrap';
       var tbl = document.createElement('table'); tbl.className = 'sheet-tbl';
       var thead = document.createElement('thead'), hr = document.createElement('tr');
@@ -1014,6 +961,7 @@ button[type=submit],.big:not(.alt),.sheetbox button:first-child{box-shadow:0 12p
         id: x.id || Date.now(),
         name: String(x.name || '').slice(0, 40),
         savedAt: String(x.savedAt || '').slice(0, 40),
+        bw: String(x.bw == null ? '' : x.bw).slice(0, 12), bwUnit: x.bwUnit === 'lb' ? 'lb' : 'kg',
         items: x.items.filter(function(it){ return it && it.name; }).slice(0, 60).map(function(it){
           return {name: String(it.name).slice(0, 80), sets: String(it.sets == null ? '' : it.sets).slice(0, 12), reps: String(it.reps == null ? '' : it.reps).slice(0, 12), kg: String(it.kg == null ? '' : it.kg).slice(0, 12)};
         })
@@ -1126,7 +1074,7 @@ button[type=submit],.big:not(.alt),.sheetbox button:first-child{box-shadow:0 12p
       var snap = {id: cur.id, name: cur.name, savedAt: new Date().toISOString(), items: cur.items.map(function(it){ return {name: it.name, sets: it.sets, reps: it.reps, kg: it.kg}; })};
       var at = -1;
       previews.forEach(function(x, k){ if (x.id === snap.id) at = k; });
-      if (at > -1) previews[at] = snap; else previews.push(snap);
+      if (at > -1) { snap.bw = previews[at].bw || ''; snap.bwUnit = previews[at].bwUnit || 'kg'; previews[at] = snap; } else { snap.bw = ''; snap.bwUnit = 'kg'; previews.push(snap); }
       storePreviews(); savedName = cur.name; savedId = cur.id;
     }
     storePlans(); cur = null; renderSchedList();
